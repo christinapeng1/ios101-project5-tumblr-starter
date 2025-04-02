@@ -8,17 +8,25 @@ import Nuke
 
 class ViewController: UIViewController, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return posts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell", for: indexPath) as! PostCell
 
             // Get the movie-associated table view row
         let post = posts[indexPath.row]
 
             // Configure the cell (i.e., update UI elements like labels, image views, etc.)
-        cell.textLabel?.text = post.summary
+        if let photo = post.photos.first {
+              let url = photo.originalSize.url
+              
+              // Load the photo in the image view via Nuke library...
+            Nuke.loadImage(with: url, into: cell.postImageView)
+
+        }
+        cell.postSummaryLabel.text = post.summary
 
             // Return the cell for use in the respective table view row
         return cell
